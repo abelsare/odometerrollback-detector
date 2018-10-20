@@ -22,7 +22,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
-@RequestMapping("/carfax/analyze")
+@RequestMapping("/analyze")
 public class OdometerRollbackDetectorController {
 	
 	private OdometerRollbackDetectorService odometerRollbackDetectorService;

@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(OdometerRollbackDetectorController.class)
 public class OdometerRollbackDetectorControllerTest {
 	
-	private static final String URL = "/carfax/analyze/odometer-rollback?vin=";
+	private static final String URL = "/analyze/odometer-rollback?vin=";
 	
 	@Autowired
 	private MockMvc mockMvc;
