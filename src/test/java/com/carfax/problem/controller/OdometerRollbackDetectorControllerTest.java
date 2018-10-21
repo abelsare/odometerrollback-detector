@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.client.RestTemplate;
 
 import com.carfax.problem.service.OdometerRollbackDetectorServiceImpl;
 
@@ -31,6 +32,11 @@ public class OdometerRollbackDetectorControllerTest {
 	
 	@MockBean
 	private OdometerRollbackDetectorServiceImpl odometerRollbackDetectorService;
+	
+	
+	
+	@MockBean
+	private RestTemplate restTemplate;
 	
 	@Before
 	public void setUp() throws Exception {

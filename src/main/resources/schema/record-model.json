@@ -1,0 +1,48 @@
+{
+  "$schema": "http:\/\/json-schema.org\/draft-07\/schema#",
+  "title": "CARFAX Challenge model",
+  "type": "object",
+  "required": [
+    "records"
+  ],
+  "properties": {
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "vin",
+          "date",
+          "data_provider_id",
+          "odometer_reading",
+          "service_details"
+        ],
+        "properties": {
+          "vin": {
+            "date": "string",
+            "description": "Vehicle identification number."
+          },
+          "date": {
+            "date": "string",
+            "description": "Date following format 'YYYY-MM-DD'."
+          },
+          "data_provider_id": {
+            "type": "integer",
+            "description": "Data provider id"
+          },
+          "odometer_reading": {
+            "type": "integer",
+            "description": "Odometer reading in KM"
+          },
+          "service_details": {
+            "type": "array",
+            "description": "List of service details e.g Oil changed, Tires rotated, etc",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

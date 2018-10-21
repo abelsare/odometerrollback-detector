@@ -14,7 +14,7 @@ API endpoint for detecting odometer tampering for a given VIN.
 ## Running the application
 
 You need to have Maven and Docker installed on your machine. 
-Execute `./setup.sh` from the command line.
+Execute `./start.sh` from the command line.
 This will create the jar file, build and run the docker image.
 
 ### Testing the API
