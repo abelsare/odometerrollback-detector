@@ -41,7 +41,7 @@ public class OdometerRollbackDetectorServiceTest {
 	}
 
 	@Test
-	public void testOdometerRollbackNoRecords() {
+	public void testOdometerRollbackNoRecords() throws NoMatchingDataException {
 		String vin = "123";
 		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(new ArrayList<>());
 		try {
@@ -54,8 +54,8 @@ public class OdometerRollbackDetectorServiceTest {
 	@Test
 	public void testOdometerRollbackNullRecords() {
 		String vin = "123";
-		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(null);
 		try {
+			when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(null);
 			odometerRollbackDetectorService.detectOdometerRollback(vin);
 		} catch (NoMatchingDataException e) {
 			assertEquals(e.getMessage(), "No matching vehicle records found for vin: " +vin);
@@ -63,7 +63,7 @@ public class OdometerRollbackDetectorServiceTest {
 	}
 	
 	@Test
-	public void testOdometerRollback() {
+	public void testOdometerRollback() throws NoMatchingDataException {
 		String vin = "123";
 		VehicleRecordDTO vehicleRecord1 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
 				10, 10010, Arrays.asList("Oil changed", "Tires rotated"));
@@ -91,7 +91,7 @@ public class OdometerRollbackDetectorServiceTest {
 	}
 	
 	@Test
-	public void testNoOdometerRollback() {
+	public void testNoOdometerRollback() throws NoMatchingDataException {
 		String vin = "123";
 		VehicleRecordDTO vehicleRecord1 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
 				10, 10010, Arrays.asList("Oil changed", "Tires rotated"));

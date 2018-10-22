@@ -18,8 +18,10 @@ public class OdometerRollbackResponseGeneratorServiceImpl implements OdometerRol
 
 	@Override
 	public List<RollbackResponseDTO> buildOdometerRollbackResponse(List<VehicleRecordDTO> vehicleRecords) throws NoMatchingDataException {
+		log.debug("Generating odometer rollback response ...");
+		
 		if(vehicleRecords == null || vehicleRecords.isEmpty()) {
-			String errorMessage = "No vehicle records found for conversion";
+			String errorMessage = "No vehicle records found for conversion.";
 			log.debug(errorMessage);
 			throw new NoMatchingDataException(errorMessage);
 		}

@@ -3,6 +3,7 @@ package com.carfax.problem.service;
 import java.util.List;
 
 import com.carfax.problem.dto.VehicleRecordDTO;
+import com.carfax.problem.exception.NoMatchingDataException;
 
 /**
  * Fetches vehicle records from remote Carfax API
@@ -15,6 +16,6 @@ public interface VehicleRecordFetcherService {
 	 * @param vin VIN for which the records need to be fetched
 	 * @return records corresponding to the given VIN
 	 */
-	List<VehicleRecordDTO> getVehicleRecords(String vin);
+	List<VehicleRecordDTO> getVehicleRecords(String vin) throws NoMatchingDataException;
 
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientException;
 
 /**
  * Catches exceptions and returns the appropriate response to the client 
@@ -24,11 +25,19 @@ public class GlobalExceptionHandler {
 	}
 	
 	@ExceptionHandler(value = {NoMatchingDataException.class})
-	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@ResponseStatus(HttpStatus.NOT_FOUND)
 	public ResponseEntity<?> handleNoMatchingData(NoMatchingDataException exception) {
 		APIExceptionResponse errorResponse = new APIExceptionResponse(
-				LocalTime.now(), "No Content", exception.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NO_CONTENT);
+				LocalTime.now(), "Not Found", exception.getMessage());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(value = {RestClientException.class})
+	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+	public ResponseEntity<?> handleDataFetchError(RestClientException exception) {
+		APIExceptionResponse errorResponse = new APIExceptionResponse(
+				LocalTime.now(), "Error", "Error fetching vehicle records from Carfax API");
+        return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
 }

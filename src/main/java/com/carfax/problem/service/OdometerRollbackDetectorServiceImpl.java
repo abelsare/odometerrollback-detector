@@ -39,6 +39,8 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 
 	@Override
 	public List<RollbackResponseDTO> detectOdometerRollback(String vin) throws NoMatchingDataException {
+		log.debug("Detecting odometer rollback for vin:{}", vin);
+		
 		//Fetch the vehicle records from Carfax API
 		List<VehicleRecordDTO> vehicleRecords = vehicleRecordFetcherService.getVehicleRecords(vin);
 		

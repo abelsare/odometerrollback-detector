@@ -1,5 +1,8 @@
 package com.carfax.problem.converter;
 
+import java.util.List;
+
+import com.carfax.problem.dto.ResponseRecordsDTO;
 import com.carfax.problem.dto.RollbackResponseDTO;
 import com.carfax.problem.dto.VehicleRecordDTO;
 
@@ -22,8 +25,13 @@ public class RollbackResponseBuilder {
 				.dataProviderId(vehicleRecord.getDataProviderId())
 				.date(vehicleRecord.getDate())
 				.odometerReading(vehicleRecord.getOdometerReading())
+				.serviceDetails(vehicleRecord.getServiceDetails())
 				.hasOdometerRollback(recordHasOdometerRollback ? true : null)
 				.build();
+	}
+	
+	public static ResponseRecordsDTO buildApiResponse(List<RollbackResponseDTO> rollbackRecords) {
+		return ResponseRecordsDTO.builder().records(rollbackRecords).build();
 	}
 
 }

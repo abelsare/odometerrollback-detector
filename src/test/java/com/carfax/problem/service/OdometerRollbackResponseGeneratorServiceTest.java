@@ -33,7 +33,7 @@ public class OdometerRollbackResponseGeneratorServiceTest {
 		try {
 			rollbackResponseGeneratorService.buildOdometerRollbackResponse(null);
 		} catch (NoMatchingDataException e) {
-			assertEquals("No vehicle records found for conversion", e.getMessage());
+			assertEquals("No vehicle records found for conversion.", e.getMessage());
 		}
 	}
 	
@@ -42,7 +42,7 @@ public class OdometerRollbackResponseGeneratorServiceTest {
 		try {
 			rollbackResponseGeneratorService.buildOdometerRollbackResponse(new ArrayList<>());
 		} catch (NoMatchingDataException e) {
-			assertEquals("No vehicle records found for conversion", e.getMessage());
+			assertEquals("No vehicle records found for conversion.", e.getMessage());
 		}
 	}
 
