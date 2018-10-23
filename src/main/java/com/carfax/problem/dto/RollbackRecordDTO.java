@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @JsonRootName("vehicle-record")
-public class RollbackResponseDTO {
+public class RollbackRecordDTO {
 
 	private String vin;
 	

@@ -14,9 +14,16 @@ import com.carfax.problem.dto.VehicleRecordsDTO;
 import com.carfax.problem.exception.NoMatchingDataException;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 /**
  * Unit test for {@link VehicleRecordFetcherService} 
@@ -28,6 +35,9 @@ public class VehicleRecordFetcherServiceTest {
 	
 	@Mock
 	private RestTemplate restTemplate;
+	
+	@Mock
+	private Validator validator;
 	
 	@Mock
 	private VehicleRecordsDTO vehicleRecordsDTO;
@@ -47,10 +57,32 @@ public class VehicleRecordFetcherServiceTest {
 		
 		when(restTemplate.getForObject(url, VehicleRecordsDTO.class)).thenReturn(vehicleRecordsDTO);
 		when(vehicleRecordsDTO.getVehicleRecords()).thenReturn(new ArrayList<>());
+		when(validator.validate(vehicleRecordsDTO)).thenReturn(new HashSet<>());
 		
 		List<VehicleRecordDTO> vehicleRecords = vehicleRecordFetcherService.getVehicleRecords(vin);
 		
 		assertNotNull("Expecting data to be returned", vehicleRecords);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testFetchInvalidVehicleRecords() throws NoMatchingDataException {
+		String vin = "123";
+		String url = REMOTE_URL + vin;
+		Set<ConstraintViolation<VehicleRecordsDTO>> validationErrors = new HashSet<>();
+		validationErrors.add(mock(ConstraintViolation.class));
+		
+		when(restTemplate.getForObject(url, VehicleRecordsDTO.class)).thenReturn(vehicleRecordsDTO);
+		when(vehicleRecordsDTO.getVehicleRecords()).thenReturn(new ArrayList<>());
+		when(validator.validate(vehicleRecordsDTO)).thenReturn(validationErrors);
+		
+		try {			
+			 vehicleRecordFetcherService.getVehicleRecords(vin);
+		} catch(ValidationException e) {
+			
+			assertEquals("Invalid response from Carfax remote API", e.getMessage());
+		}
+		
 	}
 	
 	@Test

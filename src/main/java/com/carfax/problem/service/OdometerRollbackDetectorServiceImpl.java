@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.carfax.problem.dto.RollbackResponseDTO;
+import com.carfax.problem.dto.ResponseRecordsDTO;
 import com.carfax.problem.dto.VehicleRecordDTO;
 import com.carfax.problem.exception.NoMatchingDataException;
 
@@ -38,7 +38,7 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 
 
 	@Override
-	public List<RollbackResponseDTO> detectOdometerRollback(String vin) throws NoMatchingDataException {
+	public ResponseRecordsDTO detectOdometerRollback(String vin) throws NoMatchingDataException {
 		log.debug("Detecting odometer rollback for vin:{}", vin);
 		
 		//Fetch the vehicle records from Carfax API
@@ -54,7 +54,7 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 		markOdometerRollback(vehicleRecords);
 		
 		//Generate output with required extra property indicating odometer tampering
-		List<RollbackResponseDTO> odometerRollbackData = rollbackResponseGeneratorService.
+		ResponseRecordsDTO odometerRollbackData = rollbackResponseGeneratorService.
 				buildOdometerRollbackResponse(vehicleRecords);
 		
 		return odometerRollbackData;
@@ -67,7 +67,7 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 	    	LocalDate.parse(s1.getDate(), formatter).
 	            compareTo(LocalDate.parse(s2.getDate(), formatter)));
 	    
-		//Find the first record with odometer tampering and mark it as such.
+		//Find the first record with odometer tampering and mark it.
 		//Leave the records after that unchanged.
 		OptionalInt tamperedRecordIndex = IntStream.range(0, vehicleRecords.size() - 1)
         	.filter(i -> vehicleRecords.get(i).getOdometerReading() >= vehicleRecords.get(i+1).getOdometerReading())

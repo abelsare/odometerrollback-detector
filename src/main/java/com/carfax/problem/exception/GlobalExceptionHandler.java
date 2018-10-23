@@ -2,6 +2,8 @@ package com.carfax.problem.exception;
 
 import java.time.LocalTime;
 
+import javax.validation.ValidationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,15 +26,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@ExceptionHandler(value = {NoMatchingDataException.class})
+	@ExceptionHandler(value = {NoMatchingDataException.class, RestClientException.class})
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	public ResponseEntity<?> handleNoMatchingData(NoMatchingDataException exception) {
+	public ResponseEntity<?> handleNoMatchingData(Exception exception) {
 		APIExceptionResponse errorResponse = new APIExceptionResponse(
 				LocalTime.now(), "Not Found", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
 	}
 	
-	@ExceptionHandler(value = {RestClientException.class})
+	@ExceptionHandler(value = {ValidationException.class})
 	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
 	public ResponseEntity<?> handleDataFetchError(RestClientException exception) {
 		APIExceptionResponse errorResponse = new APIExceptionResponse(

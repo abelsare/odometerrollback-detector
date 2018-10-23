@@ -11,7 +11,7 @@ import org.junit.Test;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
-import com.carfax.problem.dto.RollbackResponseDTO;
+import com.carfax.problem.dto.ResponseRecordsDTO;
 import com.carfax.problem.dto.VehicleRecordDTO;
 import com.carfax.problem.exception.NoMatchingDataException;
 
@@ -60,13 +60,13 @@ public class OdometerRollbackResponseGeneratorServiceTest {
 		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord1, vehicleRecord2,
 				vehicleRecord3, vehicleRecord4);
 		
-		List<RollbackResponseDTO> response = rollbackResponseGeneratorService.
+		ResponseRecordsDTO response = rollbackResponseGeneratorService.
 				buildOdometerRollbackResponse(vehicleRecords);
 		
-		assertNull("The first record does not have odometer rollback", response.get(0).getHasOdometerRollback());
-		assertNull("The second record does not have odometer rollback", response.get(1).getHasOdometerRollback());
-		assertNull("The third record does not have odometer rollback", response.get(2).getHasOdometerRollback());
-		assertTrue("The last record has odometer rollback", response.get(3).getHasOdometerRollback());
+		assertNull("The first record does not have odometer rollback", response.getRecords().get(0).getHasOdometerRollback());
+		assertNull("The second record does not have odometer rollback", response.getRecords().get(1).getHasOdometerRollback());
+		assertNull("The third record does not have odometer rollback", response.getRecords().get(2).getHasOdometerRollback());
+		assertTrue("The last record has odometer rollback", response.getRecords().get(3).getHasOdometerRollback());
 		
 	}
 	
@@ -85,13 +85,13 @@ public class OdometerRollbackResponseGeneratorServiceTest {
 		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord1, vehicleRecord2,
 				vehicleRecord3, vehicleRecord4);
 		
-		List<RollbackResponseDTO> response = rollbackResponseGeneratorService.
+		ResponseRecordsDTO response = rollbackResponseGeneratorService.
 				buildOdometerRollbackResponse(vehicleRecords);
 		
-		assertNull("The first record does not have odometer rollback", response.get(0).getHasOdometerRollback());
-		assertNull("The second record does not have odometer rollback", response.get(1).getHasOdometerRollback());
-		assertNull("The third record does not have odometer rollback", response.get(2).getHasOdometerRollback());
-		assertNull("The last record does not have odometer rollback", response.get(3).getHasOdometerRollback());
+		assertNull("The first record does not have odometer rollback", response.getRecords().get(0).getHasOdometerRollback());
+		assertNull("The second record does not have odometer rollback", response.getRecords().get(1).getHasOdometerRollback());
+		assertNull("The third record does not have odometer rollback", response.getRecords().get(2).getHasOdometerRollback());
+		assertNull("The last record does not have odometer rollback", response.getRecords().get(3).getHasOdometerRollback());
 		
 	}
 	

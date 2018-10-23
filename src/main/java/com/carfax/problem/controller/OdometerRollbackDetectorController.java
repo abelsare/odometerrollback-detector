@@ -1,7 +1,6 @@
 package com.carfax.problem.controller;
 
 
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -10,9 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.carfax.problem.converter.RollbackResponseBuilder;
 import com.carfax.problem.dto.ResponseRecordsDTO;
-import com.carfax.problem.dto.RollbackResponseDTO;
 import com.carfax.problem.exception.NoMatchingDataException;
 import com.carfax.problem.service.OdometerRollbackDetectorService;
 
@@ -41,9 +38,9 @@ public class OdometerRollbackDetectorController {
 	ResponseRecordsDTO detectOdometerRollback(@RequestParam("vin") String vin) throws NoMatchingDataException {
 		log.info("Received request with vin:{}", vin);
 		
-		List<RollbackResponseDTO> rollbackRecords = odometerRollbackDetectorService.detectOdometerRollback(vin);
+		ResponseRecordsDTO rollbackRecords = odometerRollbackDetectorService.detectOdometerRollback(vin);
 		
-		return RollbackResponseBuilder.buildApiResponse(rollbackRecords);
+		return rollbackRecords;
 		
 	}
 }

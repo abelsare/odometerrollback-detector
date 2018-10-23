@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ResponseRecordsDTO {
 
-	private List<RollbackResponseDTO> records;
+	private List<RollbackRecordDTO> records;
 }

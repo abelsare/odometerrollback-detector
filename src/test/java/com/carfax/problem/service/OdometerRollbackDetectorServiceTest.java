@@ -8,7 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.carfax.problem.dto.RollbackResponseDTO;
+import com.carfax.problem.dto.ResponseRecordsDTO;
+import com.carfax.problem.dto.RollbackRecordDTO;
 import com.carfax.problem.dto.VehicleRecordDTO;
 import com.carfax.problem.exception.NoMatchingDataException;
 
@@ -21,7 +22,6 @@ import java.util.List;
 
 /**
  * Unit tests for {@link OdometerRollbackDetectorService}
- * @author HP
  *
  */
 public class OdometerRollbackDetectorServiceTest {
@@ -60,6 +60,22 @@ public class OdometerRollbackDetectorServiceTest {
 		} catch (NoMatchingDataException e) {
 			assertEquals(e.getMessage(), "No matching vehicle records found for vin: " +vin);
 		}
+	}
+	
+	@Test
+	public void testOdometerRollbackSingleRecord() throws NoMatchingDataException {
+		String vin = "123";
+		VehicleRecordDTO vehicleRecord = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
+				10, 10010, Arrays.asList("Oil changed", "Tires rotated"));
+		
+		
+		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord);
+		
+		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(vehicleRecords);
+		
+		odometerRollbackDetectorService.markOdometerRollback(vehicleRecords);
+		
+		assertFalse("Expecting the first record to not have odometer tampering", vehicleRecord.getHasOdometerRollback());
 	}
 	
 	@Test
@@ -129,21 +145,24 @@ public class OdometerRollbackDetectorServiceTest {
 		
 		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord1, vehicleRecord2);
 		
-		RollbackResponseDTO responseDTO1 = buildRollbackResponseDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
+		RollbackRecordDTO responseDTO1 = buildRollbackResponseDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
 				10, 10010, Arrays.asList("Oil changed", "Tires rotated"), null);
-		RollbackResponseDTO responseDTO2 = buildRollbackResponseDTO("VSSZZZ6JZ9R056308", "2017-06-20", 
+		RollbackRecordDTO responseDTO2 = buildRollbackResponseDTO("VSSZZZ6JZ9R056308", "2017-06-20", 
 				10, 12100, Arrays.asList("Tires replaced"), null);
 		
-		List<RollbackResponseDTO> rollbackResponse = Arrays.asList(responseDTO1, responseDTO2);
+		List<RollbackRecordDTO> rollbackResponse = Arrays.asList(responseDTO1, responseDTO2);
+		
+		ResponseRecordsDTO responseRecords = mock(ResponseRecordsDTO.class);
+		when(responseRecords.getRecords()).thenReturn(rollbackResponse);
 		
 		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(vehicleRecords);
 		
 		when(rollbackResponseGeneratorService.buildOdometerRollbackResponse(vehicleRecords))
-			.thenReturn(rollbackResponse);
+			.thenReturn(responseRecords);
 		
-		List<RollbackResponseDTO> response = odometerRollbackDetectorService.detectOdometerRollback(vin);
+		ResponseRecordsDTO response = odometerRollbackDetectorService.detectOdometerRollback(vin);
 		
-		assertEquals("Expecting two records", response.size(), 2);
+		assertEquals("Expecting two records", response.getRecords().size(), 2);
 		
 	}
 	
@@ -160,9 +179,9 @@ public class OdometerRollbackDetectorServiceTest {
 		return recordDTO;
 	}
 	
-	private RollbackResponseDTO buildRollbackResponseDTO(String vin, String date, Integer dataProviderId,
+	private RollbackRecordDTO buildRollbackResponseDTO(String vin, String date, Integer dataProviderId,
 			Integer odometerReading, List<String> serviceDetails, Boolean hasOdometerRollback) {
-		RollbackResponseDTO responseDTO = mock(RollbackResponseDTO.class);
+		RollbackRecordDTO responseDTO = mock(RollbackRecordDTO.class);
 		
 		when(responseDTO.getDataProviderId()).thenReturn(dataProviderId);
 		when(responseDTO.getDate()).thenReturn(date);

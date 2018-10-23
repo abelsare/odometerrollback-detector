@@ -1,8 +1,7 @@
 package com.carfax.problem.service;
 
-import java.util.List;
 
-import com.carfax.problem.dto.RollbackResponseDTO;
+import com.carfax.problem.dto.ResponseRecordsDTO;
 import com.carfax.problem.exception.NoMatchingDataException;
 
 /**
@@ -19,5 +18,5 @@ public interface OdometerRollbackDetectorService {
 	 * flagged.
 	 * @throws NoMatchingDataException if the remote api returns no matching records
 	 */
-	List<RollbackResponseDTO> detectOdometerRollback(String vin) throws NoMatchingDataException;
+	ResponseRecordsDTO detectOdometerRollback(String vin) throws NoMatchingDataException;
 }

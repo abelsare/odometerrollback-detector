@@ -1,9 +1,15 @@
 package com.carfax.problem.service;
 
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ValidationException;
+import javax.validation.Validator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.carfax.problem.dto.VehicleRecordDTO;
@@ -20,10 +26,13 @@ public class VehicleRecordFetcherServiceImpl implements VehicleRecordFetcherServ
 	
 	private RestTemplate restTemplate;
 	
+	private Validator validator;
+	
 	@Autowired
-	public VehicleRecordFetcherServiceImpl(RestTemplate restTemplate) {
+	public VehicleRecordFetcherServiceImpl(RestTemplate restTemplate, Validator validator) {
 		super();
 		this.restTemplate = restTemplate;
+		this.validator = validator;
 	}
 
 
@@ -34,18 +43,36 @@ public class VehicleRecordFetcherServiceImpl implements VehicleRecordFetcherServ
 		
 		log.debug("Fetching vehicle records for vin:{}", vin);
 		
-		
-		VehicleRecordsDTO response = restTemplate.getForObject(requestURL, VehicleRecordsDTO.class);
-		
-		if(response != null) {
-			vehicleRecords = response.getVehicleRecords();			
-		} else {
-			String errorMessage = "No matching data found for vin:" +vin;
-			log.error(errorMessage);
-			throw new NoMatchingDataException(errorMessage);
+		try {
+			VehicleRecordsDTO response = restTemplate.getForObject(requestURL, VehicleRecordsDTO.class);
+			if(response != null) {
+				validateUpstreamResponse(response);
+				vehicleRecords = response.getVehicleRecords();			
+			} else {
+				throwNoDataFoundException(vin);
+			}
+		} catch (RestClientException e) {
+			//Remote API throws RestClientException when records are not available
+			throwNoDataFoundException(vin);
 		}
 		
 		return vehicleRecords;
+	}
+	
+	private void throwNoDataFoundException(String vin) throws NoMatchingDataException {
+		String errorMessage = "No matching data found for vin:" +vin;
+		log.error(errorMessage);
+		throw new NoMatchingDataException(errorMessage);
+	}
+	
+	private void validateUpstreamResponse(VehicleRecordsDTO response) {
+		Set<ConstraintViolation<VehicleRecordsDTO>> validationResults = validator.validate(response);
+
+        if (validationResults.size() > 0) {
+            String errorMessage = "Invalid response from Carfax remote API";
+            log.error(errorMessage);
+            throw new ValidationException(errorMessage);
+        }
 	}
 
 }
