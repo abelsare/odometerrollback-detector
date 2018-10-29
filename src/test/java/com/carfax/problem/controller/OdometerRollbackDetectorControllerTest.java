@@ -79,7 +79,7 @@ public class OdometerRollbackDetectorControllerTest {
 	
 	@Test
 	public void testResponseNoVin() throws Exception {
-		mockMvc.perform(get("/carfax/analyze/odometer-fallback"))
+		mockMvc.perform(get("/carfax/analyze/odometer-rollback"))
 			.andExpect(status().isNotFound());
 	}
 	
