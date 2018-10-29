@@ -46,7 +46,7 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 		
 		if(vehicleRecords == null || vehicleRecords.isEmpty()) {
 			String errorMessage = "No matching vehicle records found for vin: " + vin;
-			log.debug(errorMessage);
+			log.error(errorMessage);
 			throw new NoMatchingDataException(errorMessage);
 		}
 		

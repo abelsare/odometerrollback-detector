@@ -23,7 +23,7 @@ public class OdometerRollbackResponseGeneratorServiceImpl implements OdometerRol
 		
 		if(vehicleRecords == null || vehicleRecords.isEmpty()) {
 			String errorMessage = "No vehicle records found for conversion.";
-			log.debug(errorMessage);
+			log.error(errorMessage);
 			throw new NoMatchingDataException(errorMessage);
 		}
 		
