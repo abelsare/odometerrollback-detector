@@ -53,6 +53,7 @@ public class VehicleRecordFetcherServiceImpl implements VehicleRecordFetcherServ
 			}
 		} catch (RestClientException e) {
 			//Remote API throws RestClientException when records are not available
+			e.printStackTrace();
 			throwNoDataFoundException(vin);
 		}
 		
