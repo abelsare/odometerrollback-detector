@@ -36,7 +36,7 @@ import static org.mockito.Mockito.doThrow;
 @WebMvcTest(OdometerRollbackDetectorController.class)
 public class OdometerRollbackDetectorControllerTest {
 	
-	private static final String URL = "/analyze/odometer-rollback?vin=";
+	private static final String URL = "/odometer-rollback/";
 	
 	@Autowired
 	private MockMvc mockMvc;
@@ -74,12 +74,6 @@ public class OdometerRollbackDetectorControllerTest {
 	@Test
 	public void testResponseBlankVin() throws Exception {
 		mockMvc.perform(get(URL))
-			.andExpect(status().isBadRequest());
-	}
-	
-	@Test
-	public void testResponseNoVin() throws Exception {
-		mockMvc.perform(get("/carfax/analyze/odometer-rollback"))
 			.andExpect(status().isNotFound());
 	}
 	

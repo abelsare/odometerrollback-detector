@@ -24,7 +24,7 @@ The API can either be tested in two ways once the server is up and running:
 `localhost:8080/swagger-ui.html`
 
 2. Using a curl command
-`curl http://localhost:8080/analyze/odometer-rollback?vin=<vin>`
+`curl http://localhost:8080/odometer-rollback/<vin>`
 
 ### Result
 Vehicle records matching the VIN with `hasOdometerRollback` property set to `true` in case a rollback event is detected. The property is set on the first record on which the rollback event gets detected.
