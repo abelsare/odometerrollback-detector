@@ -80,11 +80,11 @@ public class OdometerRollbackDetectorControllerTest {
 	}
 	
 	@Test
-	public void testGetNotFoundResponse() throws Exception {
+	public void testGetNoDataFoundResponse() throws Exception {
 		String requestUrl = URL + "123";
 		doThrow(NoMatchingDataException.class).when(odometerRollbackDetectorService).detectOdometerRollback("123");
 		mockMvc.perform(get(requestUrl))
-			.andExpect(status().isNotFound());
+			.andExpect(status().isOk());
 	}
 	
 	@Test

@@ -26,11 +26,11 @@ public class GlobalExceptionHandler {
 	}
 	
 	@ExceptionHandler(value = {NoMatchingDataException.class, RestClientException.class})
-	@ResponseStatus(HttpStatus.NOT_FOUND)
+	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<?> handleNoMatchingData(Exception exception) {
 		APIExceptionResponse errorResponse = new APIExceptionResponse(
 				LocalTime.now(), "Not Found", exception.getMessage());
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(errorResponse, HttpStatus.OK);
 	}
 
 }
