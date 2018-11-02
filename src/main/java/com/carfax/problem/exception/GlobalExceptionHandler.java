@@ -2,7 +2,6 @@ package com.carfax.problem.exception;
 
 import java.time.LocalTime;
 
-import javax.validation.ValidationException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,14 +31,6 @@ public class GlobalExceptionHandler {
 		APIExceptionResponse errorResponse = new APIExceptionResponse(
 				LocalTime.now(), "Not Found", exception.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-	}
-	
-	@ExceptionHandler(value = {ValidationException.class})
-	@ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
-	public ResponseEntity<?> handleDataFetchError(RestClientException exception) {
-		APIExceptionResponse errorResponse = new APIExceptionResponse(
-				LocalTime.now(), "Error", "Error fetching vehicle records from Carfax API");
-        return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
 	}
 
 }

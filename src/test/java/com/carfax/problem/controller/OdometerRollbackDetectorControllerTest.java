@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.ValidationException;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import static org.mockito.Mockito.when;
@@ -89,6 +91,14 @@ public class OdometerRollbackDetectorControllerTest {
 	public void testGetInternalServerError() throws Exception {
 		String requestUrl = URL + "123";
 		doThrow(RuntimeException.class).when(odometerRollbackDetectorService).detectOdometerRollback("123");
+		mockMvc.perform(get(requestUrl))
+			.andExpect(status().isInternalServerError());
+	}
+	
+	@Test
+	public void testGetInternalServerErrorOnValidationFailure() throws Exception {
+		String requestUrl = URL + "123";
+		doThrow(ValidationException.class).when(odometerRollbackDetectorService).detectOdometerRollback("123");
 		mockMvc.perform(get(requestUrl))
 			.andExpect(status().isInternalServerError());
 	}
