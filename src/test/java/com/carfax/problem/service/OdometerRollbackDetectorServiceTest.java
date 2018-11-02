@@ -166,6 +166,74 @@ public class OdometerRollbackDetectorServiceTest {
 		
 	}
 	
+	@Test
+	public void testDetectOdometerRollbackResponseSameDate() throws NoMatchingDataException {
+		String vin = "123";
+		VehicleRecordDTO vehicleRecord1 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
+				10, 12200, Arrays.asList("Oil changed", "Tires rotated"));
+		VehicleRecordDTO vehicleRecord2 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
+				10, 12100, Arrays.asList("Tires replaced"));
+		
+		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord1, vehicleRecord2);
+		
+		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(vehicleRecords);
+		
+		odometerRollbackDetectorService.markOdometerRollback(vehicleRecords);
+		
+		assertFalse("Expecting the first record to not have odometer tampering", vehicleRecord1.getHasOdometerRollback());
+		assertFalse("Expecting the second record to not have odometer tampering", vehicleRecord2.getHasOdometerRollback());
+		
+	}
+	
+	@Test
+	public void testDetectMileageInconsistency() throws NoMatchingDataException {
+		String vin = "123";
+		VehicleRecordDTO vehicleRecord1 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
+				10, 12200, Arrays.asList("Oil changed", "Tires rotated"));
+		VehicleRecordDTO vehicleRecord2 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-02-02", 
+				10, 12100, Arrays.asList("Tires replaced"));
+		VehicleRecordDTO vehicleRecord3 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-03-02", 
+				10, 12300, Arrays.asList("Tires replaced"));
+		
+		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord1, vehicleRecord2, vehicleRecord3);
+		
+		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(vehicleRecords);
+		
+		odometerRollbackDetectorService.markOdometerRollback(vehicleRecords);
+		
+		assertFalse("Expecting the first record to not have mileage inconistency", vehicleRecord1.getHasMileageInconsistency());
+		assertTrue("Expecting the second record to have mileage inconistency", vehicleRecord2.getHasMileageInconsistency());
+		assertFalse("Expecting the third record to not have mileage inconistency", vehicleRecord3.getHasMileageInconsistency());
+	}
+	
+	@Test
+	public void testOdometerRollbackAndMileageInconsistency() throws NoMatchingDataException {
+		String vin = "123";
+		VehicleRecordDTO vehicleRecord1 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-01-02", 
+				10, 12200, Arrays.asList("Oil changed", "Tires rotated"));
+		VehicleRecordDTO vehicleRecord2 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-02-02", 
+				10, 12100, Arrays.asList("Tires replaced"));
+		VehicleRecordDTO vehicleRecord3 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2017-03-02", 
+				10, 12300, Arrays.asList("Tires replaced"));
+		VehicleRecordDTO vehicleRecord4 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2018-04-01", 
+				10, 600, Arrays.asList("Air dam replaced", "Oil service"));
+		VehicleRecordDTO vehicleRecord5 = buildVehicleRecordDTO("VSSZZZ6JZ9R056308", "2018-06-01", 
+				10, 650, Arrays.asList("Air dam replaced", "Oil service"));
+		
+		List<VehicleRecordDTO> vehicleRecords = Arrays.asList(vehicleRecord1, vehicleRecord2,
+				vehicleRecord3, vehicleRecord4, vehicleRecord5);
+		
+		when(vehicleRecordFetcherService.getVehicleRecords(vin)).thenReturn(vehicleRecords);
+		
+		odometerRollbackDetectorService.markOdometerRollback(vehicleRecords);
+		
+		assertFalse("Expecting the first record to not have mileage inconistency", vehicleRecord1.getHasMileageInconsistency());
+		assertTrue("Expecting the second record to have mileage inconistency", vehicleRecord2.getHasMileageInconsistency());
+		assertFalse("Expecting the third record to not have mileage inconistency", vehicleRecord3.getHasMileageInconsistency());
+		assertTrue("Expecting the fourth record to not have odometer rollback", vehicleRecord4.getHasOdometerRollback());
+		
+	}
+	
 	private VehicleRecordDTO buildVehicleRecordDTO(String vin, String date, Integer dataProviderId,
 			Integer odometerReading, List<String> serviceDetails) {
 		VehicleRecordDTO recordDTO = new VehicleRecordDTO();

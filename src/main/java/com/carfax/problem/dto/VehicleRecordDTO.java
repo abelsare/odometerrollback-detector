@@ -38,5 +38,8 @@ public class VehicleRecordDTO {
 	
 	@JsonIgnore
 	private Boolean hasOdometerRollback = Boolean.FALSE;
+	
+	@JsonIgnore
+	private Boolean hasMileageInconsistency = Boolean.FALSE;
 
 }

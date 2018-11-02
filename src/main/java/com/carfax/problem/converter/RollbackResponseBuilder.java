@@ -19,6 +19,7 @@ public class RollbackResponseBuilder {
 	 */
 	public static RollbackRecordDTO buildOdometerRollbackResponse(VehicleRecordDTO vehicleRecord) {
 		boolean recordHasOdometerRollback = vehicleRecord.getHasOdometerRollback();
+		boolean hasMileageInconsistency = vehicleRecord.getHasMileageInconsistency();
 		
 		return RollbackRecordDTO.builder()
 				.vin(vehicleRecord.getVin())
@@ -26,7 +27,8 @@ public class RollbackResponseBuilder {
 				.date(vehicleRecord.getDate())
 				.odometerReading(vehicleRecord.getOdometerReading())
 				.serviceDetails(vehicleRecord.getServiceDetails())
-				.hasOdometerRollback(recordHasOdometerRollback ? Boolean.TRUE : null)
+				.hasOdometerRollback(recordHasOdometerRollback ? Boolean.TRUE : Boolean.FALSE)
+				.hasMileageInconsistency(hasMileageInconsistency? Boolean.TRUE : Boolean.FALSE)
 				.build();
 	}
 	

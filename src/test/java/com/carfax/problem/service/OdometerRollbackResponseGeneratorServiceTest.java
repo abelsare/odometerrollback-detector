@@ -63,9 +63,9 @@ public class OdometerRollbackResponseGeneratorServiceTest {
 		ResponseRecordsDTO response = rollbackResponseGeneratorService.
 				buildOdometerRollbackResponse(vehicleRecords);
 		
-		assertNull("The first record does not have odometer rollback", response.getRecords().get(0).getHasOdometerRollback());
-		assertNull("The second record does not have odometer rollback", response.getRecords().get(1).getHasOdometerRollback());
-		assertNull("The third record does not have odometer rollback", response.getRecords().get(2).getHasOdometerRollback());
+		assertFalse("The first record does not have odometer rollback", response.getRecords().get(0).getHasOdometerRollback());
+		assertFalse("The second record does not have odometer rollback", response.getRecords().get(1).getHasOdometerRollback());
+		assertFalse("The third record does not have odometer rollback", response.getRecords().get(2).getHasOdometerRollback());
 		assertTrue("The last record has odometer rollback", response.getRecords().get(3).getHasOdometerRollback());
 		
 	}
@@ -88,10 +88,10 @@ public class OdometerRollbackResponseGeneratorServiceTest {
 		ResponseRecordsDTO response = rollbackResponseGeneratorService.
 				buildOdometerRollbackResponse(vehicleRecords);
 		
-		assertNull("The first record does not have odometer rollback", response.getRecords().get(0).getHasOdometerRollback());
-		assertNull("The second record does not have odometer rollback", response.getRecords().get(1).getHasOdometerRollback());
-		assertNull("The third record does not have odometer rollback", response.getRecords().get(2).getHasOdometerRollback());
-		assertNull("The last record does not have odometer rollback", response.getRecords().get(3).getHasOdometerRollback());
+		assertFalse("The first record does not have odometer rollback", response.getRecords().get(0).getHasOdometerRollback());
+		assertFalse("The second record does not have odometer rollback", response.getRecords().get(1).getHasOdometerRollback());
+		assertFalse("The third record does not have odometer rollback", response.getRecords().get(2).getHasOdometerRollback());
+		assertFalse("The last record does not have odometer rollback", response.getRecords().get(3).getHasOdometerRollback());
 		
 	}
 	

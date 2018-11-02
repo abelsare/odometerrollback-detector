@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.OptionalInt;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,12 +69,26 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 	    
 		//Find the first record with odometer tampering and mark it.
 		//Leave the records after that unchanged.
-		OptionalInt tamperedRecordIndex = IntStream.range(0, vehicleRecords.size() - 1)
-        	.filter(i -> vehicleRecords.get(i).getOdometerReading() >= vehicleRecords.get(i+1).getOdometerReading())
-        	.findFirst();
+		List<Integer> tamperedRecordIndexes = IntStream.range(0, vehicleRecords.size() - 1).boxed()
+			.filter(i -> LocalDate.parse( vehicleRecords.get(i).getDate(), formatter).
+	            compareTo(LocalDate.parse( vehicleRecords.get(i+1).getDate(), formatter)) != 0)
+        	.filter(
+        			i -> vehicleRecords.get(i).getOdometerReading() >= vehicleRecords.get(i+1).getOdometerReading())
+        	.collect(Collectors.toList());
 		
-		if(tamperedRecordIndex.isPresent()) {
-			vehicleRecords.get(tamperedRecordIndex.getAsInt() + 1).setHasOdometerRollback(Boolean.TRUE);			
+		if(tamperedRecordIndexes != null && !tamperedRecordIndexes.isEmpty()) {
+			for (Integer tamperedRecordIndex : tamperedRecordIndexes) {
+				
+				if(tamperedRecordIndex < vehicleRecords.size() - 2) {
+					if(vehicleRecords.get(tamperedRecordIndex + 2).getOdometerReading() > vehicleRecords.get(tamperedRecordIndex).getOdometerReading()) {
+						vehicleRecords.get(tamperedRecordIndex + 1).setHasMileageInconsistency(Boolean.TRUE);
+					}
+					if(vehicleRecords.get(tamperedRecordIndex + 2).getOdometerReading() < vehicleRecords.get(tamperedRecordIndex).getOdometerReading()) {
+						vehicleRecords.get(tamperedRecordIndex + 1).setHasOdometerRollback(Boolean.TRUE);
+					}
+				}
+								
+			}
 		}
 	
 	}

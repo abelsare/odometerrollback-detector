@@ -32,6 +32,9 @@ public class RollbackRecordDTO {
 	
 	private List<String> serviceDetails;
 	
-	@JsonInclude(Include.NON_NULL)
+	@JsonInclude(Include.NON_DEFAULT)
 	private Boolean hasOdometerRollback;
+	
+	@JsonInclude(Include.NON_DEFAULT)
+	private Boolean hasMileageInconsistency;
 }
