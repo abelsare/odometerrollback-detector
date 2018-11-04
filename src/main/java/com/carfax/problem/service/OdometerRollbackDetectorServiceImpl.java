@@ -67,8 +67,7 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 	    	LocalDate.parse(s1.getDate(), formatter).
 	            compareTo(LocalDate.parse(s2.getDate(), formatter)));
 	    
-		//Find the first record with odometer tampering and mark it.
-		//Leave the records after that unchanged.
+		//Find the records with tampered readings only on the different dates
 		List<Integer> tamperedRecordIndexes = IntStream.range(0, vehicleRecords.size() - 1).boxed()
 			.filter(i -> LocalDate.parse( vehicleRecords.get(i).getDate(), formatter).
 	            compareTo(LocalDate.parse( vehicleRecords.get(i+1).getDate(), formatter)) != 0)
@@ -77,19 +76,18 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
         	.collect(Collectors.toList());
 		
 		if(tamperedRecordIndexes != null && !tamperedRecordIndexes.isEmpty()) {
-			for (Integer tamperedRecordIndex : tamperedRecordIndexes) {
-				
+			tamperedRecordIndexes.forEach(tamperedRecordIndex -> {
 				if(tamperedRecordIndex < vehicleRecords.size() - 2) {
-					if(vehicleRecords.get(tamperedRecordIndex + 2).getOdometerReading() > vehicleRecords.get(tamperedRecordIndex).getOdometerReading()) {
+					if(vehicleRecords.get(tamperedRecordIndex + 2).getOdometerReading() > 
+								vehicleRecords.get(tamperedRecordIndex).getOdometerReading()) {
+						//Mileage inconsistency case: when the record following the tampered record is more than the one before it.
 						vehicleRecords.get(tamperedRecordIndex + 1).setHasMileageInconsistency(Boolean.TRUE);
-					}
-					if(vehicleRecords.get(tamperedRecordIndex + 2).getOdometerReading() < vehicleRecords.get(tamperedRecordIndex).getOdometerReading()) {
+					} else {
+						//Otherwise it is odometer tampering
 						vehicleRecords.get(tamperedRecordIndex + 1).setHasOdometerRollback(Boolean.TRUE);
 					}
 				}
-								
-			}
+			});
 		}
-	
 	}
 }
