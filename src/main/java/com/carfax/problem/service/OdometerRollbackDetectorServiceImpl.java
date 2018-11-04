@@ -62,17 +62,16 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 	
 	protected void markOdometerRollback(List<VehicleRecordDTO> vehicleRecords) {
 		//Sort the vehicle records on date field
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
 	    Collections.sort(vehicleRecords, (s1, s2) -> 
-	    	LocalDate.parse(s1.getDate(), formatter).
-	            compareTo(LocalDate.parse(s2.getDate(), formatter)));
+	    	parseReadingDate(s1.getDate()).compareTo(parseReadingDate(s2.getDate())));
 	    
 		//Find the records with tampered readings only on the different dates
 		List<Integer> tamperedRecordIndexes = IntStream.range(0, vehicleRecords.size() - 1).boxed()
-			.filter(i -> LocalDate.parse( vehicleRecords.get(i).getDate(), formatter).
-	            compareTo(LocalDate.parse( vehicleRecords.get(i+1).getDate(), formatter)) != 0)
-        	.filter(
-        			i -> vehicleRecords.get(i).getOdometerReading() >= vehicleRecords.get(i+1).getOdometerReading())
+			.filter(i -> parseReadingDate( vehicleRecords.get(i).getDate()).
+	            compareTo(parseReadingDate( vehicleRecords.get(i+1).getDate())) != 0)
+        	.filter(i -> vehicleRecords.get(i).getOdometerReading() >= 
+        					vehicleRecords.get(i+1).getOdometerReading())
         	.collect(Collectors.toList());
 		
 		if(tamperedRecordIndexes != null && !tamperedRecordIndexes.isEmpty()) {
@@ -89,5 +88,10 @@ public class OdometerRollbackDetectorServiceImpl implements OdometerRollbackDete
 				}
 			});
 		}
+	}
+	
+	private LocalDate parseReadingDate(String date) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		return LocalDate.parse(date, formatter);
 	}
 }
